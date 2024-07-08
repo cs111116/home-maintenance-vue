@@ -3,7 +3,9 @@ import App from './App.vue';
 import router from './router';
 import axios from 'axios';
 import VueAxios from 'vue-axios';
-
+// 設置api token
+const token = process.env.VUE_APP_API_TOKEN;
+axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 // 设置 axios 的基础 URL
 axios.defaults.baseURL = 'http://127.0.0.1:8000/api';
 // 设置全局请求头
