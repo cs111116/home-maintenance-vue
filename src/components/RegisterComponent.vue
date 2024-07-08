@@ -35,11 +35,11 @@ export default {
     async register() {
       try {
         const response = await this.axios.post('/register', this.user);
-        if (response.status === 201) {
+        if (response.data.status === "success") {
           alert('Registration successful!');
           // 进一步处理，例如重定向到登录页
         } else {
-          alert('Registration failed!');
+          alert('Registration failed:' + response.data.message);
         }
       } catch (error) {
         console.error('Registration error:', error);
@@ -55,6 +55,6 @@ export default {
   max-width: 300px;
   margin: auto;
   padding: 20px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 </style>

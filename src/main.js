@@ -5,7 +5,7 @@ import axios from 'axios';
 import VueAxios from 'vue-axios';
 
 // 设置 axios 的基础 URL
-axios.defaults.baseURL = 'http://127.0.0.1:8000';
+axios.defaults.baseURL = 'http://127.0.0.1:8000/api';
 // 设置全局请求头
 axios.defaults.headers.common['Content-Type'] = 'application/x-www-form-urlencoded';
 

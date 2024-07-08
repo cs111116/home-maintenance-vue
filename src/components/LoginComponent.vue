@@ -30,11 +30,11 @@ export default {
     async login() {
       try {
         const response = await this.axios.post('/login', this.credentials);
-        if (response.status === 200) {
+        if (response.data.status === "success") {
           alert('Login successful!');
           // 进一步处理，例如重定向到主页
         } else {
-          alert('Login failed!');
+          alert('Login failed:' + response.data.message);
         }
       } catch (error) {
         console.error('Login error:', error);
@@ -50,6 +50,6 @@ export default {
   max-width: 300px;
   margin: auto;
   padding: 20px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 </style>
