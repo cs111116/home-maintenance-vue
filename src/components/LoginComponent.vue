@@ -32,7 +32,7 @@ export default {
         const response = await this.axios.post('/login', this.credentials);
         if (response.data.status === "success") {
           alert('Login successful!');
-          // 进一步处理，例如重定向到主页
+          console.log(response.data);
         } else {
           alert('Login failed:' + response.data.message);
         }
