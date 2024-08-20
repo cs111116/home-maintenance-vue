@@ -1,0 +1,16 @@
+// 自定義 Foundation 的變量（可選）
+$primary-color: #2199e8;
+$secondary-color: #ffae00;
+
+// 引入 Foundation 的核心
+@import 'foundation-sites/scss/foundation';
+
+// 引入 Foundation 的全部功能
+@include foundation-everything;
+
+// 自定義的樣式
+body {
+  font-family: Arial, sans-serif;
+}
+
+// 其他自定義樣式...

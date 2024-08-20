@@ -3,6 +3,8 @@ import App from './App.vue';
 import router from './router';
 import axios from 'axios';
 import VueAxios from 'vue-axios';
+import './assets/styles/styles.scss';
+
 // 設置api token
 const token = process.env.VUE_APP_API_TOKEN;
 axios.defaults.headers.common['api_token'] = `Bearer ${token}`;
