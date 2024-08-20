@@ -33,7 +33,9 @@ export default {
         if (response.data.status === "success") {
           alert('Login successful!');
           console.log(response.data);
+          this.$router.push({ name: 'User' });
         } else {
+          console.log(response.data);
           alert('Login failed:' + response.data.message);
         }
       } catch (error) {
