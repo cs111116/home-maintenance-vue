@@ -3,11 +3,23 @@
     <h1 class="text-center">Login</h1>
     <form @submit.prevent="login">
       <label for="email">Email:</label>
-      <input type="email" id="email" v-model="credentials.email" required placeholder="Email">
-      
+      <input
+        type="email"
+        id="email"
+        v-model="credentials.email"
+        required
+        placeholder="Email"
+      />
+
       <label for="password">Password:</label>
-      <input type="password" id="password" v-model="credentials.password" required placeholder="Password">
-      
+      <input
+        type="password"
+        id="password"
+        v-model="credentials.password"
+        required
+        placeholder="Password"
+      />
+
       <button type="submit">Login</button>
     </form>
   </div>
@@ -15,32 +27,32 @@
 
 <script>
 export default {
-  name: 'LoginComponent',
+  name: "LoginComponent",
   data() {
     return {
       credentials: {
-        email: '',
-        password: ''
-      }
+        email: "",
+        password: "",
+      },
     };
   },
   methods: {
     async login() {
       try {
-        const response = await this.axios.post('/login', this.credentials);
+        const response = await this.axios.post("/login", this.credentials);
         if (response.data.status === "success") {
-          alert('Login successful!');
-          this.$router.push({ name: 'User' });
+          alert("Login successful!");
+          this.$router.push({ name: "User" });
         } else {
-          alert('Login failed:' + response.data.message);
+          alert(response.data.message);
         }
       } catch (error) {
-        console.error('Login error:', error);
-        alert('Login failed!');
+        console.error("Login error:", error);
+        alert(error.response.data.message);
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style scoped>
