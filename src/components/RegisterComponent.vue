@@ -3,13 +3,43 @@
     <h1 class="text-center">Register</h1>
     <form @submit.prevent="register">
       <label for="name">Name:</label>
-      <input type="text" id="name" v-model="user.name" required placeholder="Your Name" class="input-group-field">
+      <input
+        type="text"
+        id="name"
+        v-model="user.name"
+        required
+        placeholder="Your Name"
+        class="input-group-field"
+      />
 
       <label for="email">Email:</label>
-      <input type="email" id="email" v-model="user.email" required placeholder="Email" class="input-group-field">
+      <input
+        type="email"
+        id="email"
+        v-model="user.email"
+        required
+        placeholder="Email"
+        class="input-group-field"
+      />
 
       <label for="password">Password:</label>
-      <input type="password" id="password" v-model="user.password" required placeholder="Password" class="input-group-field">
+      <input
+        type="password"
+        id="password"
+        v-model="user.password"
+        required
+        placeholder="Password"
+        class="input-group-field"
+      />
+      <label for="password_confirmation">Confirm Password:</label>
+      <input
+        type="password"
+        id="password_confirmation"
+        v-model="user.password_confirmation"
+        required
+        placeholder="Confirm Password"
+        class="input-group-field"
+      />
 
       <button type="submit" class="button expanded">Register</button>
     </form>
@@ -18,33 +48,34 @@
 
 <script>
 export default {
-  name: 'RegisterComponent',
+  name: "RegisterComponent",
   data() {
     return {
       user: {
-        name: '',
-        email: '',
-        password: ''
-      }
+        name: "",
+        email: "",
+        password: "",
+        password_confirmation:"",
+      },
     };
   },
   methods: {
     async register() {
       try {
-        const response = await this.axios.post('/register', this.user);
+        const response = await this.axios.post("/register", this.user);
         if (response.data.status === "success") {
-          alert('Registration successful!');
-          this.$router.push({ name: 'Login' });  // 進一步處理，例如重定向到登錄頁
+          alert("Registration successful!");
+          this.$router.push({ name: "Login" }); // 進一步處理，例如重定向到登錄頁
         } else {
-          alert('Registration failed:' + response.data.message);
+          alert("Registration failed:" + response.data.message);
         }
       } catch (error) {
-        console.error('Registration error:', error);
-        alert('Registration failed!');
+        console.error("Registration error:", error);
+        alert("Registration failed!" + error.response.data.message);
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style scoped>

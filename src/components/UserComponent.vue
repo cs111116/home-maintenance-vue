@@ -13,6 +13,7 @@
 export default {
   name: 'UserComponent'
 }
+
 </script>
 
 <style scoped>
