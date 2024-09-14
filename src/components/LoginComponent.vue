@@ -41,7 +41,9 @@ export default {
       try {
         const response = await this.axios.post("/login", this.credentials);
         if (response.data.status === "success") {
+          localStorage.setItem("auth_token", response.data.token);
           alert("Login successful!");
+          this.$emit('login-success');
           this.$router.push({ name: "User" });
         } else {
           alert(response.data.message);

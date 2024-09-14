@@ -5,28 +5,58 @@
       <h1>Welcome to Your Vue.js App</h1>
     </div>
     <div class="right">
-      <router-link v-if="!isLoggedIn" to="/login" class="button">登入</router-link>
-      <router-link v-if="!isLoggedIn" to="/register" class="button">註冊</router-link>
-      <button v-if="isLoggedIn" @click="logout" class="button alert">登出</button>
+      <router-link v-if="!isLoggedIn" to="/login" class="button"
+        >登入</router-link
+      >
+      <router-link v-if="!isLoggedIn" to="/register" class="button"
+        >註冊</router-link
+      >
+      <button v-if="isLoggedIn" @click="logout" class="button alert">
+        登出
+      </button>
     </div>
   </header>
 </template>
 
 <script>
 export default {
-  name: 'HeaderComponent',
-  computed: {
-    isLoggedIn() {
-      return !!localStorage.getItem('auth_token');
-    }
+  name: "HeaderComponent",
+  data() {
+    return {
+      isLoggedIn: !!localStorage.getItem("auth_token"), // 初始判斷是否登入
+    };
+  },
+  watch: {
+    // 監聽 localStorage 變化來更新 isLoggedIn 狀態
+    $route() {
+      this.isLoggedIn = !!localStorage.getItem("auth_token");
+    },
   },
   methods: {
-    logout() {
-      localStorage.removeItem('auth_token');
-      this.$router.push({ name: 'Login' });
-    }
-  }
-}
+    async logout() {
+      try {
+        // 調用後端的登出 API
+        const response = await this.axios.post("/logout");
+
+        // 驗證後端是否回傳了成功的狀態
+        if (response.data.status === "success") {
+          // 清除 localStorage 中的 token
+          localStorage.removeItem("auth_token");
+          // 更新 isLoggedIn 狀態
+          this.isLoggedIn = false;
+          // 導航到登入頁面
+          this.$router.push({ name: "Login" });
+          alert("登出成功");
+        } else {
+          alert(response.data.message || "登出失敗，請稍後重試");
+        }
+      } catch (error) {
+        console.error("登出失敗:", error);
+        alert("登出失敗，請稍後重試");
+      }
+    },
+  },
+};
 </script>
 
 <style scoped>

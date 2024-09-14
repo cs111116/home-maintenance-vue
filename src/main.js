@@ -5,9 +5,16 @@ import axios from 'axios';
 import VueAxios from 'vue-axios';
 import './assets/styles/styles.scss';
 
-// 設置api token
-const token = process.env.VUE_APP_API_TOKEN;
-axios.defaults.headers.common['api_token'] = `Bearer ${token}`;
+// 使用 Axios 拦截器动态设置 token
+axios.interceptors.request.use((config) => {
+    const token = localStorage.getItem('auth_token');
+    if (token) {
+      config.headers['Authorization'] = `Bearer ${token}`;
+    }
+    return config;
+  }, (error) => {
+    return Promise.reject(error);
+  });
 // 设置 axios 的基础 URL
 axios.defaults.baseURL = 'http://127.0.0.1:8000/api';
 // 设置全局请求头
