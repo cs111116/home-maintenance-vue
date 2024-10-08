@@ -26,13 +26,15 @@
 </template>
 
 <script>
-import { ref, reactive } from "vue"; // 使用 ref 和 reactive 來處理響應式數據
+import { ref, reactive, getCurrentInstance } from "vue"; // 使用 ref 和 reactive 來處理響應式數據，getCurrentInstance 用於獲取 this
 import { useRouter } from "vue-router"; // 使用 Vue Router 來實現路由導航
 import { useReCaptcha } from "vue-recaptcha-v3"; // 使用 useReCaptcha 提供的 reCAPTCHA 功能
-//reCAPTCHA v3 的驗證方式是隱式的，因此它不需要顯示驗證碼的欄位 V2 才是有欄位
+// reCAPTCHA v3 的驗證方式是隱式的，因此它不需要顯示驗證碼的欄位 V2 才是有欄位
+
 export default {
   name: "LoginComponent",
   setup() {
+    const { proxy } = getCurrentInstance(); // 獲取 this 實例
     const router = useRouter(); // 獲取 Vue Router 的路由對象
     const credentials = reactive({
       email: "",
@@ -59,8 +61,8 @@ export default {
       }
 
       try {
-        // 發送登錄請求
-        const response = await this.axios.post("/login", {
+        // 使用 proxy.axios 發送請求，這裡的 axios 是全局配置的
+        const response = await proxy.axios.post("/login", {
           ...credentials,
           captcha_token: captchaToken.value, // 傳遞 reCAPTCHA token 給後端
         });
