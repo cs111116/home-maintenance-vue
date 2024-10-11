@@ -3,22 +3,10 @@
     <h1 class="text-center">Login</h1>
     <form @submit.prevent="login">
       <label for="email">Email:</label>
-      <input
-        type="email"
-        id="email"
-        v-model="credentials.email"
-        required
-        placeholder="Email"
-      />
+      <input type="email" id="email" v-model="credentials.email" required placeholder="Email" />
 
       <label for="password">Password:</label>
-      <input
-        type="password"
-        id="password"
-        v-model="credentials.password"
-        required
-        placeholder="Password"
-      />
+      <input type="password" id="password" v-model="credentials.password" required placeholder="Password" />
 
       <button type="submit">Login</button>
     </form>
@@ -48,7 +36,8 @@ export default {
     const onRecaptchaVerified = async () => {
       const token = await executeRecaptcha(); // 執行 reCAPTCHA 驗證，獲取 token
       captchaToken.value = token; // 保存 token
-      console.log("Recaptcha token:", token);
+      const now = new Date();
+      console.log(`[${now.toLocaleString()}] Recaptcha token:`, token);
     };
 
     // 登錄邏輯
@@ -61,10 +50,12 @@ export default {
       }
 
       try {
+        const currentTime = new Date().toLocaleString();
         // 使用 proxy.axios 發送請求，這裡的 axios 是全局配置的
         const response = await proxy.axios.post("/login", {
           ...credentials,
           captcha_token: captchaToken.value, // 傳遞 reCAPTCHA token 給後端
+          timestamp: currentTime, // 传递当前时间到后端
         });
 
         if (response.data.status === "success") {
