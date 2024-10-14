@@ -1,4 +1,3 @@
-// src/components/HeaderComponent.vue
 <template>
   <header>
     <div class="left">
@@ -35,8 +34,24 @@ export default {
   methods: {
     async logout() {
       try {
+        // 確認 token 是否存在
+        console.log("test");
+        const token = localStorage.getItem("auth_token");
+        if (!token) {
+          alert("無法登出，因為未找到有效的登入憑證。");
+          return;
+        }
+
         // 調用後端的登出 API
-        const response = await this.axios.post("/logout");
+        const response = await this.axios.post(
+          "/logout",
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         // 驗證後端是否回傳了成功的狀態
         if (response.data.status === "success") {
@@ -51,8 +66,16 @@ export default {
           alert(response.data.message || "登出失敗，請稍後重試");
         }
       } catch (error) {
-        console.error("登出失敗:", error);
-        alert("登出失敗，請稍後重試");
+        if (error.response && error.response.status === 401) {
+          // 當 token 已過期或無效，清除 localStorage 並跳轉到登入頁面
+          localStorage.removeItem("auth_token");
+          this.isLoggedIn = false;
+          this.$router.push({ name: "Login" });
+          alert("您的登入憑證已失效，請重新登入。");
+        } else {
+          console.error("登出失敗:", error);
+          alert("登出失敗，請稍後重試");
+        }
       }
     },
   },
