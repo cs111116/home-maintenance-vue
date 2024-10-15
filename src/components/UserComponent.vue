@@ -1,32 +1,43 @@
-// 前端：Vue.js - 記帳功能實作
 <template>
-  <div class="account-container">
-    <h1 class="text-center">記帳系統</h1>
-    <form @submit.prevent="addEntry">
-      <label for="category">消費類別：</label>
-      <select v-model="newEntry.category" id="category" required>
-        <option v-for="category in categories" :key="category" :value="category">
-          {{ category }}
-        </option>
-      </select>
+  <v-card>
+    <v-toolbar color="primary">
+      <v-tabs v-model="activeTab">
+        <v-tab value="addEntry">記帳</v-tab>
+        <v-tab value="entriesList">記帳紀錄</v-tab>
+      </v-tabs>
+    </v-toolbar>
+    <div v-if="activeTab === 'addEntry'" class="account-container">
+      <h1 class="text-center">記帳系統</h1>
+      <form @submit.prevent="addEntry">
+        <label for="category">消費類別：</label>
+        <select v-model="newEntry.category" id="category" required>
+          <optgroup v-for="group in categories" :key="group.group" :label="group.group">
+            <option v-for="item in group.items" :key="item" :value="item">
+              {{ item }}
+            </option>
+          </optgroup>
+        </select>
 
-      <label for="item">品項：</label>
-      <input type="text" v-model="newEntry.item" id="item" required placeholder="消費品項" />
+        <label for="item">品項：</label>
+        <input type="text" v-model="newEntry.item" id="item" required placeholder="消費品項" />
 
-      <label for="amount">金額：</label>
-      <input type="number" v-model="newEntry.amount" id="amount" required placeholder="金額" />
+        <label for="amount">金額：</label>
+        <input type="number" v-model="newEntry.amount" id="amount" required placeholder="金額" />
 
-      <label for="paymentMethod">支付方式：</label>
-      <select v-model="newEntry.paymentMethod" id="paymentMethod" required>
-        <option v-for="method in paymentMethods" :key="method" :value="method">
-          {{ method }}
-        </option>
-      </select>
+        <label for="remark">備註：</label>
+        <input type="text" v-model="newEntry.remark" id="remark" placeholder="備註" />
 
-      <button type="submit">新增記帳</button>
-    </form>
+        <label for="paymentMethod">支付方式：</label>
+        <select v-model="newEntry.paymentMethod" id="paymentMethod" required>
+          <option v-for="method in paymentMethods" :key="method" :value="method">
+            {{ method }}
+          </option>
+        </select>
 
-    <div class="entries-list">
+        <button type="submit">新增記帳</button>
+      </form>
+    </div>
+    <div v-else-if="activeTab === 'entriesList'" class="account-container entries-list">
       <h2>記帳歷史</h2>
       <ul>
         <li v-for="entry in entries" :key="entry.id">
@@ -36,7 +47,7 @@
         </li>
       </ul>
     </div>
-  </div>
+  </v-card>
 </template>
 
 <script>
@@ -47,10 +58,20 @@ export default {
   name: "UserComponent",
   setup() {
     const categories = [
-      "飲食", "計畫與健康", "居住", "交通", "投資自己", "娛樂", "旅行", "人情", "家人", "代辦", "佈施", "寵物", "貸款", "台股", "虛擬貨幣", "儲蓄", "額外收入", "信貸保險金", "手機月費", "車保", "機車保", "車子維修", "機車維修", "獎章中獎", "薪水", "補習"
+      { group: "生活", items: ["飲食", "帥氣與健康", "居住", "交通", "手機月費", "情侶基金", "貸款"] },
+      { group: "教育", items: ["投資自己"] },
+      { group: "休息", items: ["寵物", "娛樂", "旅行"] },
+      { group: "交通工具", items: ["車稅", "維修"] },
+      { group: "保險", items: ["機車", "汽車", "個人", "家庭"] },
+      { group: "儲蓄", items: ["儲蓄"] },
+      { group: "投資", items: ["台股", "美股"] },
+      { group: "付出", items: ["家人", "人情", "代墊", "佈施"] },
+      { group: "薪資", items: ["薪水"] },
+      { group: "不勞而獲", items: ["額外收入", "發票中獎", "家人"] },
+      { group: "其他", items: ["補額"] }
     ];
     const paymentMethods = [
-      "現金", "電子支付(統一超Richart付費)", "國泰CUBE信用卡", "聯邦金圓信用卡", "玉山UBEAR", "富邦COSTCO聯名卡"
+      "現金", "電子支付(統一從Richat付款)", "國泰CUBE信用卡", "聯邦全國信用卡", "玉山UBEAR", "富邦COSTCO聯名卡"
     ];
 
     const entries = ref([]);
@@ -59,8 +80,10 @@ export default {
       category: "",
       item: "",
       amount: null,
+      remark: "",
       paymentMethod: ""
     });
+    const activeTab = ref("addEntry");
 
     const addEntry = () => {
       newEntry.id = uuidv4();
@@ -82,6 +105,7 @@ export default {
       newEntry.category = "";
       newEntry.item = "";
       newEntry.amount = null;
+      newEntry.remark = "";
       newEntry.paymentMethod = "";
     };
 
@@ -92,7 +116,8 @@ export default {
       newEntry,
       addEntry,
       editEntry,
-      deleteEntry
+      deleteEntry,
+      activeTab
     };
   }
 };
@@ -110,16 +135,38 @@ export default {
 .text-center {
   text-align: center;
 }
+.tabs {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.tabs button {
+  padding: 10px;
+  background-color: #007bff;
+  border: none;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.tabs button.active {
+  background-color: #0056b3;
+}
+.tabs button:hover {
+  background-color: #0056b3;
+}
 label {
   display: block;
   margin-bottom: 5px;
 }
-input, select {
+input,
+select {
   width: 100%;
   padding: 10px;
   margin-bottom: 15px;
   border: 1px solid #ccc;
   border-radius: 4px;
+  -webkit-appearance: menulist;
+  appearance: menulist;
 }
 button {
   padding: 10px;

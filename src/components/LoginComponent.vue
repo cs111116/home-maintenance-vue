@@ -36,8 +36,6 @@ export default {
     const onRecaptchaVerified = async () => {
       const token = await executeRecaptcha(); // 執行 reCAPTCHA 驗證，獲取 token
       captchaToken.value = token; // 保存 token
-      const now = new Date();
-      console.log(`[${now.toLocaleString()}] Recaptcha token:`, token);
     };
 
     // 登錄邏輯
