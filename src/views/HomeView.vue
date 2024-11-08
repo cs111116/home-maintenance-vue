@@ -11,7 +11,7 @@
 
 <script>
 export default {
-  name: 'HomeComponent'
+  name: 'HomeView'
 }
 </script>
 

@@ -4,6 +4,7 @@
       <v-tabs v-model="activeTab">
         <v-tab value="addEntry">記帳</v-tab>
         <v-tab value="entriesList">記帳紀錄</v-tab>
+        <v-tab value="addCategory">新增類別</v-tab>
       </v-tabs>
     </v-toolbar>
     <div v-if="activeTab === 'addEntry'" class="account-container">
@@ -29,8 +30,8 @@
 
         <label for="paymentMethod">支付方式：</label>
         <select v-model="newEntry.paymentMethod" id="paymentMethod" required>
-          <option v-for="method in paymentMethods" :key="method" :value="method">
-            {{ method }}
+          <option v-for="method in paymentMethods" :key="method.id" :value="method.name">
+            {{ method.name }}
           </option>
         </select>
 
@@ -47,32 +48,31 @@
         </li>
       </ul>
     </div>
+    <div v-else-if="activeTab === 'addCategory'" class="account-container">
+      <h2>新增類別</h2>
+      <form @submit.prevent="addCategory">
+        <label for="group">類別組：</label>
+        <input type="text" v-model="newCategory.group" id="group" required placeholder="類別組名稱" />
+
+        <label for="item">類別名稱：</label>
+        <input type="text" v-model="newCategory.item" id="item" required placeholder="類別名稱" />
+
+        <button type="submit">新增類別</button>
+      </form>
+    </div>
   </v-card>
 </template>
 
 <script>
-import { ref, reactive } from "vue";
+import { ref, reactive, onMounted } from "vue";
+import axios from "@/plugins/axios";
 import { v4 as uuidv4 } from "uuid";
 
 export default {
-  name: "UserComponent",
+  name: "UserView",
   setup() {
-    const categories = [
-      { group: "生活", items: ["飲食", "帥氣與健康", "居住", "交通", "手機月費", "情侶基金", "貸款"] },
-      { group: "教育", items: ["投資自己"] },
-      { group: "休息", items: ["寵物", "娛樂", "旅行"] },
-      { group: "交通工具", items: ["車稅", "維修"] },
-      { group: "保險", items: ["機車", "汽車", "個人", "家庭"] },
-      { group: "儲蓄", items: ["儲蓄"] },
-      { group: "投資", items: ["台股", "美股"] },
-      { group: "付出", items: ["家人", "人情", "代墊", "佈施"] },
-      { group: "薪資", items: ["薪水"] },
-      { group: "不勞而獲", items: ["額外收入", "發票中獎", "家人"] },
-      { group: "其他", items: ["補額"] }
-    ];
-    const paymentMethods = [
-      "現金", "電子支付(統一從Richat付款)", "國泰CUBE信用卡", "聯邦全國信用卡", "玉山UBEAR", "富邦COSTCO聯名卡"
-    ];
+    const categories = ref([]);
+    const paymentMethods = ref([]);
 
     const entries = ref([]);
     const newEntry = reactive({
@@ -85,10 +85,40 @@ export default {
     });
     const activeTab = ref("addEntry");
 
+    const newCategory = reactive({
+      group: "",
+      item: ""
+    });
+
+    // 加載類別和支付方式
+    const loadAccountingData = async () => {
+      try {
+        const response = await axios.get("/accounting-data");
+        categories.value = response.data.categories;
+        paymentMethods.value = response.data.payment_methods;
+      } catch (error) {
+        console.error("Error loading accounting data:", error);
+      }
+    };
+
+    onMounted(() => {
+      loadAccountingData();
+    });
+
     const addEntry = () => {
       newEntry.id = uuidv4();
       entries.value.push({ ...newEntry });
       clearEntry();
+    };
+
+    const addCategory = async () => {
+      try {
+        await axios.post('/categories', newCategory);
+        await loadAccountingData(); // 重新加載類別
+        clearCategory();
+      } catch (error) {
+        console.error("Error adding category:", error);
+      }
     };
 
     const editEntry = (entry) => {
@@ -109,12 +139,19 @@ export default {
       newEntry.paymentMethod = "";
     };
 
+    const clearCategory = () => {
+      newCategory.group = "";
+      newCategory.item = "";
+    };
+
     return {
       categories,
       paymentMethods,
       entries,
       newEntry,
+      newCategory,
       addEntry,
+      addCategory,
       editEntry,
       deleteEntry,
       activeTab

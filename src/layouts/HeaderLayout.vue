@@ -19,7 +19,7 @@
 
 <script>
 export default {
-  name: "HeaderComponent",
+  name: "HeaderLayout",
   data() {
     return {
       isLoggedIn: !!localStorage.getItem("auth_token"), // 初始判斷是否登入

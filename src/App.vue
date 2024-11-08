@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <HeaderComponent @login-success="updateLoginStatus" />
+    <HeaderLayout @login-success="updateLoginStatus" />
     <main>
       <router-view></router-view>
     </main>
@@ -8,12 +8,12 @@
 </template>
 
 <script>
-import HeaderComponent from "./components/layout/HeaderComponent.vue";
+import HeaderLayout from "./layouts/HeaderLayout.vue";
 
 export default {
   name: "App",
   components: {
-    HeaderComponent,
+    HeaderLayout,
   },
   data() {
     return {
