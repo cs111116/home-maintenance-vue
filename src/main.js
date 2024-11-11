@@ -8,6 +8,7 @@ import VueAxios from "vue-axios";
 import vuetify from './plugins/vuetify.js';
 import "./assets/styles/styles.scss";
 import { VueReCaptcha } from "vue-recaptcha-v3";// 從 vue-recaptcha-v3 導入 VueReCaptcha 插件 此命名方式是固定的
+import disableOnClick from './directives/disableOnClick';
 const pinia = createPinia()
 const app = createApp(App);
 // app.component('HCaptcha', HCaptcha);
@@ -18,5 +19,6 @@ app.use(VueReCaptcha, {
 });
 app.use(vuetify);
 app.use(pinia);
+app.directive('disable-on-click', disableOnClick);
 app.use(router);
 app.mount("#app");

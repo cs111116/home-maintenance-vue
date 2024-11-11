@@ -8,7 +8,7 @@
       <label for="password">Password:</label>
       <input type="password" id="password" v-model="credentials.password" required placeholder="Password" />
 
-      <button type="submit">Login</button>
+      <button :disabled="loading">Login</button>
     </form>
   </div>
 </template>
@@ -31,18 +31,32 @@ export default {
     });
 
     const login = async () => {
-      const captchaToken = await executeRecaptcha('login');
-      if (!captchaToken) {
-        alert("請完成驗證碼");
-        return;
+      try {
+        console.log("test");
+        const captchaToken = await executeRecaptcha('login');
+        if (!captchaToken) {
+          alert("請完成驗證碼");
+          return;
+        }
+        const result = await authStore.login(credentials, captchaToken);
+        if (result.success) {
+          alert('Login successful!');
+          router.push({ name: "User" });
+        } else {
+          alert(result.message);
+        }
+      } catch (error) {
+        console.error("Login failed:", error);
+        alert("登入失敗，請稍後重試");
       }
-      await authStore.login(credentials, captchaToken);
-      router.push({ name: "User" });
     };
-
+    const test123 = async () => {
+      alert("这是测试");
+    };
     return {
       credentials,
-      login
+      login,
+      test123
     };
   }
 };

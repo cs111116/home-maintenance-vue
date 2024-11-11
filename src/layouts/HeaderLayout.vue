@@ -4,80 +4,45 @@
       <h1>Welcome to Your Vue.js App</h1>
     </div>
     <div class="right">
-      <router-link v-if="!isLoggedIn" to="/login" class="button"
-        >登入</router-link
-      >
-      <router-link v-if="!isLoggedIn" to="/register" class="button"
-        >註冊</router-link
-      >
-      <button v-if="isLoggedIn" @click="logout" class="button alert">
-        登出
-      </button>
+      <router-link v-if="!isLoggedIn" to="/login" class="button">登入</router-link>
+      <router-link v-if="!isLoggedIn" to="/register" class="button">註冊</router-link>
+      <button v-if="isLoggedIn" @click="handleLogout" class="button alert">登出</button>
     </div>
   </header>
 </template>
 
 <script>
+import { computed } from 'vue';
+import { useAuthStore } from '@/store/modules/auth';
+import { useRouter } from 'vue-router';
+
 export default {
   name: "HeaderLayout",
-  data() {
-    return {
-      isLoggedIn: !!localStorage.getItem("auth_token"), // 初始判斷是否登入
-    };
-  },
-  watch: {
-    // 監聽 localStorage 變化來更新 isLoggedIn 狀態
-    $route() {
-      this.isLoggedIn = !!localStorage.getItem("auth_token");
-    },
-  },
-  methods: {
-    async logout() {
-      try {
-        // 確認 token 是否存在
-        console.log("test");
-        const token = localStorage.getItem("auth_token");
-        if (!token) {
-          alert("無法登出，因為未找到有效的登入憑證。");
-          return;
-        }
+  setup() {
+    // 使用 Composition API 獲取路由器實例
+    const router = useRouter();
+    const authStore = useAuthStore();
 
-        // 調用後端的登出 API
-        const response = await this.axios.post(
-          "/logout",
-          {},
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+    // 計算屬性，用來判斷是否已經登入
+    const isLoggedIn = computed(() => authStore.isLoggedIn);
 
-        // 驗證後端是否回傳了成功的狀態
-        if (response.data.status === "success") {
-          // 清除 localStorage 中的 token
-          localStorage.removeItem("auth_token");
-          // 更新 isLoggedIn 狀態
-          this.isLoggedIn = false;
-          // 導航到登入頁面
-          this.$router.push({ name: "Login" });
-          alert("登出成功");
-        } else {
-          alert(response.data.message || "登出失敗，請稍後重試");
-        }
-      } catch (error) {
-        if (error.response && error.response.status === 401) {
-          // 當 token 已過期或無效，清除 localStorage 並跳轉到登入頁面
-          localStorage.removeItem("auth_token");
-          this.isLoggedIn = false;
-          this.$router.push({ name: "Login" });
-          alert("您的登入憑證已失效，請重新登入。");
-        } else {
-          console.error("登出失敗:", error);
-          alert("登出失敗，請稍後重試");
-        }
+    // 處理登出邏輯
+    const handleLogout = async () => {
+      const result = await authStore.logout();
+      if (result.success) {
+        alert("登出成功");
+        router.push({ name: "Home" });
+      } else if (result.expired) {
+        alert("您的登入憑證已失效，請重新登入。");
+        router.push({ name: "Login" });
+      } else {
+        alert(result.message || "登出失敗，請稍後重試");
       }
-    },
+    };
+    return {
+      isLoggedIn,
+      handleLogout,
+    };
   },
 };
 </script>

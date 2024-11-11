@@ -41,20 +41,22 @@ export default {
     });
 
     const register = async () => {
-      try {
-        // 調用工具函數執行 reCAPTCHA 驗證
-        const captchaToken = await executeRecaptcha("register");
-        if (!captchaToken) {
-          alert("請完成驗證碼");
-          return;
-        }
-        // 調用 auth store 的 register 方法
-        await authStore.register(user, captchaToken);
-        router.push({ name: "Login" });
-      } catch (error) {
-        console.error("Captcha error:", error);
-        alert("reCAPTCHA 驗證失敗，請稍後再試");
+      // 調用工具函數執行 reCAPTCHA 驗證
+      const captchaToken = await executeRecaptcha("register");
+      if (!captchaToken) {
+        alert("請完成驗證碼");
+        return;
       }
+      // 調用 auth store 的 register 方法
+      const result = await authStore.register(user, captchaToken);
+      if (result.success) {
+        alert('Register successful!');
+        router.push({ name: "Login" });
+      } else {
+        alert(result.message);
+      }
+
+
     };
 
     return {
