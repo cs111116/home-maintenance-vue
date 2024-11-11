@@ -8,15 +8,15 @@
       <label for="password">Password:</label>
       <input type="password" id="password" v-model="credentials.password" required placeholder="Password" />
 
-      <button :disabled="loading">Login</button>
+      <button v-disable-on-click="login">Login</button>
     </form>
   </div>
 </template>
 
 <script>
 import { reactive } from 'vue';
-import { useRouter } from "vue-router";
 import { useAuthStore } from '@/store/modules/auth';
+import { useRouter } from "vue-router";
 import { useReCaptcha } from 'vue-recaptcha-v3';
 
 export default {
@@ -32,7 +32,6 @@ export default {
 
     const login = async () => {
       try {
-        console.log("test");
         const captchaToken = await executeRecaptcha('login');
         if (!captchaToken) {
           alert("請完成驗證碼");
@@ -50,13 +49,9 @@ export default {
         alert("登入失敗，請稍後重試");
       }
     };
-    const test123 = async () => {
-      alert("这是测试");
-    };
     return {
       credentials,
       login,
-      test123
     };
   }
 };
@@ -64,7 +59,7 @@ export default {
 
 <style scoped>
 .login-container {
-  max-width: 300px;
+  max-width: 400px;
   margin: 150px auto 0 auto;
   padding: 20px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);

@@ -15,7 +15,7 @@
       <input type="password" id="password_confirmation" v-model="user.password_confirmation" required
         placeholder="Confirm Password" />
 
-      <button type="submit" class="button expanded">Register</button>
+      <button v-disable-on-click="register" class="button expanded">Register</button>
     </form>
   </div>
 </template>

@@ -6,7 +6,7 @@
     <div class="right">
       <router-link v-if="!isLoggedIn" to="/login" class="button">登入</router-link>
       <router-link v-if="!isLoggedIn" to="/register" class="button">註冊</router-link>
-      <button v-if="isLoggedIn" @click="handleLogout" class="button alert">登出</button>
+      <button v-if="isLoggedIn" v-disable-on-click="handleLogout" class="button alert">登出</button>
     </div>
   </header>
 </template>
