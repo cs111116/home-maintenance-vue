@@ -8,7 +8,6 @@ export default {
       } catch (error) {
         console.error("Error in executing function:", error);
       } finally {
-        console.log("啟用按鈕");
         el.disabled = false; // 操作完成後啟用按鈕
       }
     });

@@ -40,7 +40,7 @@ export default {
         const result = await authStore.login(credentials, captchaToken);
         if (result.success) {
           alert('Login successful!');
-          router.push({ name: "User" });
+          router.push({ name: "Categories" });
         } else {
           alert(result.message);
         }
