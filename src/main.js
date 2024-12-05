@@ -2,7 +2,7 @@ import { createApp } from "vue";
 import { createPinia } from 'pinia';
 import App from "./App.vue";
 import router from "./router";
-import axios from './plugins/axios.js';
+import mainAxios from './plugins/axios.js';
 import VueAxios from "vue-axios";
 import vuetify from './plugins/vuetify.js';
 import "./assets/styles/styles.scss";
@@ -12,7 +12,7 @@ const pinia = createPinia()
 const app = createApp(App);
 // app.component('HCaptcha', HCaptcha);
 // 使用 VueAxios 插件并配置全局 axios 实例
-app.use(VueAxios, axios);
+app.use(VueAxios, mainAxios );
 app.use(VueReCaptcha, {
   siteKey: process.env.VUE_APP_RECAPTCHA_SITE_KEY // 替換為你的 reCAPTCHA siteKey
 });

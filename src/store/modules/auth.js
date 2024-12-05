@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import axios from '@/plugins/axios';
+import mainAxios from '@/plugins/axios';
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -17,7 +17,7 @@ export const useAuthStore = defineStore('auth', {
         }
 
         // 添加驗證碼 token 到請求中
-        const response = await axios.post('/login', {
+        const response = await mainAxios.post('/login', {
           ...payload,
           captcha_token: captchaToken,
         });
@@ -41,7 +41,7 @@ export const useAuthStore = defineStore('auth', {
         }
 
         // 添加驗證碼 token 到請求中
-        const response = await axios.post('/register', {
+        const response = await mainAxios.post('/register', {
           ...payload,
           captcha_token: captchaToken,
         });
@@ -61,7 +61,7 @@ export const useAuthStore = defineStore('auth', {
           throw new Error("無法登出，因為未找到有效的登入憑證。");
         }
 
-        const response = await axios.post('/logout', {}, {
+        const response = await mainAxios.post('/logout', {}, {
           headers: {
             Authorization: `Bearer ${this.token}`,
           },

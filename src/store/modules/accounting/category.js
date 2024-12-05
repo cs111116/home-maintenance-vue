@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import axios from 'axios';
+import mainAxios from '@/plugins/axios';
 
 export const useCategoryStore = defineStore('category', {
   state: () => ({
@@ -9,8 +9,10 @@ export const useCategoryStore = defineStore('category', {
     // 獲取分類數據
     async fetchCategories() {
       try {
-        const response = await axios.get('/categories');
-        this.categories = response.data.categories;
+        const response = await mainAxios.get('/categories');
+        console.log('API Response:', response); // 確認完整結構
+        this.categories = response.data.data || [];
+        console.log('Updated Categories in Store:', this.categories); // 檢查更新後的值
       } catch (error) {
         console.error('Failed to fetch categories:', error);
       }
@@ -18,7 +20,7 @@ export const useCategoryStore = defineStore('category', {
     // 新增分類
     async addCategory(category) {
       try {
-        const response = await axios.post('/categories', category);
+        const response = await mainAxios.post('/categories', category);
         this.categories.push(response.data.category);
       } catch (error) {
         console.error('Failed to add category:', error);
@@ -27,7 +29,7 @@ export const useCategoryStore = defineStore('category', {
     // 刪除分類
     async deleteCategory(id) {
       try {
-        await axios.delete(`/api/categories/${id}`);
+        await mainAxios.delete(`/api/categories/${id}`);
         this.categories = this.categories.filter((category) => category.id !== id);
       } catch (error) {
         console.error('Failed to delete category:', error);
