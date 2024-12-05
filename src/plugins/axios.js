@@ -33,7 +33,6 @@ mainAxios.interceptors.response.use(
 
       // Token 過期
       if (status === 401) {
-        alert("憑證已過期，請重新登入。");
         localStorage.removeItem("auth_token");
         router.push({ name: "Login" }); // 跳轉至登入頁
       }
