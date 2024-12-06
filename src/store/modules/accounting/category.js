@@ -10,9 +10,7 @@ export const useCategoryStore = defineStore('category', {
     async fetchCategories() {
       try {
         const response = await mainAxios.get('/categories');
-        console.log('API Response:', response); // 確認完整結構
         this.categories = response.data.data || [];
-        console.log('Updated Categories in Store:', this.categories); // 檢查更新後的值
       } catch (error) {
         console.error('Failed to fetch categories:', error);
       }
@@ -21,15 +19,28 @@ export const useCategoryStore = defineStore('category', {
     async addCategory(category) {
       try {
         const response = await mainAxios.post('/categories', category);
-        this.categories.push(response.data.category);
+        this.categories.push(response.data.data);
       } catch (error) {
         console.error('Failed to add category:', error);
+      }
+    },
+    async updateCategory(updatedCategory) {
+      console.log('Updating category:', updatedCategory)
+      const response = await mainAxios.put(
+        `/categories/${updatedCategory.id}`,
+        updatedCategory
+      );
+      const index = this.categories.findIndex(
+        (category) => category.id === updatedCategory.id
+      );
+      if (index !== -1) {
+        this.categories[index] = response.data.data;
       }
     },
     // 刪除分類
     async deleteCategory(id) {
       try {
-        await mainAxios.delete(`/api/categories/${id}`);
+        await mainAxios.delete(`categories/${id}`);
         this.categories = this.categories.filter((category) => category.id !== id);
       } catch (error) {
         console.error('Failed to delete category:', error);

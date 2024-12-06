@@ -14,7 +14,13 @@
           />
         </div>
         <div class="modal-actions">
-          <button type="submit" class="save-button">儲存</button>
+          <button
+            type="submit"
+            class="save-button"
+            v-disable-on-click="submitCategory"
+          >
+            儲存
+          </button>
           <button type="button" class="cancel-button" @click="$emit('close')">
             取消
           </button>
@@ -32,9 +38,18 @@ export default {
   setup(_, { emit }) {
     const categoryName = ref("");
 
-    const submitCategory = () => {
-      emit("submit", { name: categoryName.value });
-      categoryName.value = "";
+    const submitCategory = async () => {
+      if (!categoryName.value.trim()) {
+        alert("分類名稱不能為空");
+        return;
+      }
+      try {
+        // 模擬提交分類
+        await emit("submit", { name: categoryName.value.trim() });
+        categoryName.value = ""; // 清空輸入框
+      } catch (error) {
+        console.error("提交分類時出錯:", error);
+      }
     };
 
     return {

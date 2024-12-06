@@ -12,6 +12,7 @@ const mainAxios  = axios.create({
 // 請求攔截器
 mainAxios.interceptors.request.use(
   (config) => {
+    console.log('Request sent:', config.url);
     const token = localStorage.getItem("auth_token");
     if (token) {
       config.headers["Authorization"] = `Bearer ${token}`;
