@@ -30,15 +30,19 @@ export const useCategoryStore = defineStore('category', {
         console.error("更新分類失敗: 缺少 ID");
         return;
       }
-      const response = await mainAxios.put(
-        `/categories/${updatedCategory.id}`,
-        updatedCategory
-      );
-      const index = this.categories.findIndex(
-        (category) => category.id === updatedCategory.id
-      );
-      if (index !== -1) {
-        this.categories[index] = response.data.data;
+      try {
+        const response = await mainAxios.put(
+          `/categories/${updatedCategory.id}`,
+          updatedCategory
+        );
+        const index = this.categories.findIndex(
+          (category) => category.id === updatedCategory.id
+        );
+        if (index !== -1) {
+          this.categories[index] = response.data.data;
+        }
+      } catch (error) {
+        console.error("Failed to update category:", error);
       }
     },
     // 刪除分類
