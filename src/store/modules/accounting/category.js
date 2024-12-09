@@ -25,7 +25,11 @@ export const useCategoryStore = defineStore('category', {
       }
     },
     async updateCategory(updatedCategory) {
-      console.log('Updating category:', updatedCategory)
+      console.log("editCategory triggered from:", updatedCategory);
+      if (!updatedCategory || !updatedCategory.id) {
+        console.error("更新分類失敗: 缺少 ID");
+        return;
+      }
       const response = await mainAxios.put(
         `/categories/${updatedCategory.id}`,
         updatedCategory

@@ -57,6 +57,7 @@ export default {
     };
 
     const editCategory = async (updatedCategory) => {
+      console.log("editCategory triggered", updatedCategory);
       await categoryStore.updateCategory(updatedCategory);
       showEditModal.value = false;
     };
